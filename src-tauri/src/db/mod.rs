@@ -155,6 +155,16 @@ pub fn insert_paper_task(conn: &Connection, paper_id: &str, task_slug: &str, cat
     Ok(())
 }
 
+/// Check if a paper exists in the database
+pub fn paper_exists(conn: &Connection, paper_id: &str) -> Result<bool> {
+    let count: i64 = conn.query_row(
+        "SELECT COUNT(*) FROM papers WHERE id = ?1",
+        [paper_id],
+        |row| row.get(0),
+    )?;
+    Ok(count > 0)
+}
+
 /// Update paper summary
 pub fn update_paper_summary(db_path: &str, paper_id: &str, summary: &str) -> Result<()> {
     let conn = get_connection(db_path)?;

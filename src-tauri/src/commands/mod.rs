@@ -56,6 +56,7 @@ pub async fn get_papers(
 }
 
 /// Fetch papers from arXiv API and save to database
+/// Only fetches new papers that don't already exist in the database
 #[tauri::command]
 pub async fn fetch_papers(
     state: State<'_, AppState>,
@@ -71,10 +72,21 @@ pub async fn fetch_papers(
     // Save to database
     let conn = db::get_connection(db_path)?;
     
-    // Collect paper IDs that need translation
+    // Collect NEW paper IDs that need translation (skip existing papers)
     let mut papers_to_translate: Vec<(String, String)> = Vec::new();
+    let mut new_paper_count = 0;
+    let mut skipped_count = 0;
     
     for (arxiv_paper, category_name, task_slug) in &arxiv_papers {
+        // Check if paper already exists in database
+        if db::paper_exists(&conn, &arxiv_paper.id)? {
+            // Paper already exists - just add the task relationship if new
+            db::insert_paper_task(&conn, &arxiv_paper.id, task_slug, category_name)?;
+            skipped_count += 1;
+            continue;
+        }
+        
+        // New paper - save to database
         let paper = Paper {
             id: arxiv_paper.id.clone(),
             title: arxiv_paper.title.clone(),
@@ -91,11 +103,14 @@ pub async fn fetch_papers(
         db::upsert_paper(&conn, &paper)?;
         db::insert_paper_task(&conn, &paper.id, task_slug, category_name)?;
         
-        // Add to translation queue
+        // Add to translation queue (only new papers)
         papers_to_translate.push((arxiv_paper.id.clone(), arxiv_paper.title.clone()));
+        new_paper_count += 1;
     }
     
-    // Translate titles (with rate limiting built into the client)
+    println!("Fetch complete: {} new papers, {} skipped (already exist)", new_paper_count, skipped_count);
+    
+    // Translate titles for NEW papers only (with rate limiting built into the client)
     for (paper_id, title) in &papers_to_translate {
         match translate_client.translate_to_japanese(title).await {
             Ok(title_ja) => {
