@@ -51,6 +51,10 @@ export function PaperCard({ paper, onGenerateSummary }: PaperCardProps) {
     }
   };
 
+  // Display Japanese title if available, otherwise show English title
+  const displayTitle = paper.titleJa || paper.title;
+  const hasJapaneseTitle = !!paper.titleJa;
+
   return (
     <article className="paper-card">
       <div className="paper-card-header">
@@ -64,16 +68,19 @@ export function PaperCard({ paper, onGenerateSummary }: PaperCardProps) {
                 openExternal(paper.urlPaper!);
               }}
             >
-              {paper.title}
+              {displayTitle}
             </a>
           ) : (
-            paper.title
+            displayTitle
           )}
         </h2>
         {paper.published && (
           <span className="paper-date">{formatDate(paper.published)}</span>
         )}
       </div>
+      {hasJapaneseTitle && (
+        <p className="paper-title-original">{paper.title}</p>
+      )}
 
       <div className="paper-summary">
         {paper.summaryJa ? (

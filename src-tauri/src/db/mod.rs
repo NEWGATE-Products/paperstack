@@ -11,6 +11,7 @@ pub fn init_db(db_path: &str) -> Result<()> {
         CREATE TABLE IF NOT EXISTS papers (
             id TEXT PRIMARY KEY,
             title TEXT NOT NULL,
+            title_ja TEXT,
             abstract TEXT,
             summary_ja TEXT,
             url_pdf TEXT,
@@ -33,6 +34,9 @@ pub fn init_db(db_path: &str) -> Result<()> {
         "
     )?;
     
+    // Migration: Add title_ja column if it doesn't exist (for existing databases)
+    let _ = conn.execute("ALTER TABLE papers ADD COLUMN title_ja TEXT", []);
+    
     Ok(())
 }
 
@@ -53,7 +57,7 @@ pub fn get_papers_from_db(
     
     let papers = if let Some(cat) = category {
         let mut stmt = conn.prepare(
-            "SELECT DISTINCT p.id, p.title, p.abstract, p.summary_ja, p.url_pdf, p.url_paper, p.published, p.fetched_at
+            "SELECT DISTINCT p.id, p.title, p.title_ja, p.abstract, p.summary_ja, p.url_pdf, p.url_paper, p.published, p.fetched_at
              FROM papers p
              JOIN paper_tasks pt ON p.id = pt.paper_id
              WHERE pt.category = ?1
@@ -65,12 +69,13 @@ pub fn get_papers_from_db(
             Ok(models::Paper {
                 id: row.get(0)?,
                 title: row.get(1)?,
-                r#abstract: row.get(2)?,
-                summary_ja: row.get(3)?,
-                url_pdf: row.get(4)?,
-                url_paper: row.get(5)?,
-                published: row.get(6)?,
-                fetched_at: row.get(7)?,
+                title_ja: row.get(2)?,
+                r#abstract: row.get(3)?,
+                summary_ja: row.get(4)?,
+                url_pdf: row.get(5)?,
+                url_paper: row.get(6)?,
+                published: row.get(7)?,
+                fetched_at: row.get(8)?,
                 tasks: vec![],
             })
         })?;
@@ -78,7 +83,7 @@ pub fn get_papers_from_db(
         paper_iter.collect::<Result<Vec<_>>>()?
     } else {
         let mut stmt = conn.prepare(
-            "SELECT id, title, abstract, summary_ja, url_pdf, url_paper, published, fetched_at
+            "SELECT id, title, title_ja, abstract, summary_ja, url_pdf, url_paper, published, fetched_at
              FROM papers
              ORDER BY published DESC
              LIMIT ?1"
@@ -88,12 +93,13 @@ pub fn get_papers_from_db(
             Ok(models::Paper {
                 id: row.get(0)?,
                 title: row.get(1)?,
-                r#abstract: row.get(2)?,
-                summary_ja: row.get(3)?,
-                url_pdf: row.get(4)?,
-                url_paper: row.get(5)?,
-                published: row.get(6)?,
-                fetched_at: row.get(7)?,
+                title_ja: row.get(2)?,
+                r#abstract: row.get(3)?,
+                summary_ja: row.get(4)?,
+                url_pdf: row.get(5)?,
+                url_paper: row.get(6)?,
+                published: row.get(7)?,
+                fetched_at: row.get(8)?,
                 tasks: vec![],
             })
         })?;
@@ -124,11 +130,12 @@ fn get_tasks_for_paper(conn: &Connection, paper_id: &str) -> Result<Vec<String>>
 /// Insert or update a paper
 pub fn upsert_paper(conn: &Connection, paper: &models::Paper) -> Result<()> {
     conn.execute(
-        "INSERT OR REPLACE INTO papers (id, title, abstract, summary_ja, url_pdf, url_paper, published, fetched_at)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, datetime('now'))",
+        "INSERT OR REPLACE INTO papers (id, title, title_ja, abstract, summary_ja, url_pdf, url_paper, published, fetched_at)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, datetime('now'))",
         (
             &paper.id,
             &paper.title,
+            &paper.title_ja,
             &paper.r#abstract,
             &paper.summary_ja,
             &paper.url_pdf,
@@ -158,12 +165,21 @@ pub fn update_paper_summary(db_path: &str, paper_id: &str, summary: &str) -> Res
     Ok(())
 }
 
+/// Update paper Japanese title
+pub fn update_paper_title_ja(conn: &Connection, paper_id: &str, title_ja: &str) -> Result<()> {
+    conn.execute(
+        "UPDATE papers SET title_ja = ?1 WHERE id = ?2",
+        (title_ja, paper_id),
+    )?;
+    Ok(())
+}
+
 /// Get a single paper by ID
 pub fn get_paper_by_id(db_path: &str, paper_id: &str) -> Result<Option<models::Paper>> {
     let conn = get_connection(db_path)?;
     
     let mut stmt = conn.prepare(
-        "SELECT id, title, abstract, summary_ja, url_pdf, url_paper, published, fetched_at
+        "SELECT id, title, title_ja, abstract, summary_ja, url_pdf, url_paper, published, fetched_at
          FROM papers WHERE id = ?1"
     )?;
     
@@ -171,12 +187,13 @@ pub fn get_paper_by_id(db_path: &str, paper_id: &str) -> Result<Option<models::P
         Ok(models::Paper {
             id: row.get(0)?,
             title: row.get(1)?,
-            r#abstract: row.get(2)?,
-            summary_ja: row.get(3)?,
-            url_pdf: row.get(4)?,
-            url_paper: row.get(5)?,
-            published: row.get(6)?,
-            fetched_at: row.get(7)?,
+            title_ja: row.get(2)?,
+            r#abstract: row.get(3)?,
+            summary_ja: row.get(4)?,
+            url_pdf: row.get(5)?,
+            url_paper: row.get(6)?,
+            published: row.get(7)?,
+            fetched_at: row.get(8)?,
             tasks: vec![],
         })
     })?;
@@ -226,6 +243,7 @@ mod tests {
         let paper = models::Paper {
             id: "test-123".to_string(),
             title: "Test Paper".to_string(),
+            title_ja: Some("テスト論文".to_string()),
             r#abstract: Some("This is a test abstract".to_string()),
             summary_ja: None,
             url_pdf: Some("https://example.com/paper.pdf".to_string()),
@@ -242,6 +260,7 @@ mod tests {
         let retrieved = retrieved.unwrap();
         assert_eq!(retrieved.id, "test-123");
         assert_eq!(retrieved.title, "Test Paper");
+        assert_eq!(retrieved.title_ja, Some("テスト論文".to_string()));
         
         cleanup_test_db(&db_path);
     }
@@ -254,6 +273,7 @@ mod tests {
         let paper = models::Paper {
             id: "test-456".to_string(),
             title: "ML Paper".to_string(),
+            title_ja: None,
             r#abstract: None,
             summary_ja: None,
             url_pdf: None,

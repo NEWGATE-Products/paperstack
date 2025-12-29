@@ -1,6 +1,7 @@
 export interface Paper {
   id: string;
   title: string;
+  titleJa: string | null;
   abstract: string | null;
   summaryJa: string | null;
   urlPdf: string | null;

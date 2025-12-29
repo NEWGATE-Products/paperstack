@@ -1,6 +1,6 @@
 //! Tauri IPC Commands
 
-use crate::api::{arxiv::ArxivClient, groq::GroqClient};
+use crate::api::{arxiv::ArxivClient, groq::GroqClient, translate::TranslateClient};
 use crate::db::{self, models::{Category, Paper}};
 use crate::AppState;
 use serde::{Deserialize, Serialize};
@@ -35,6 +35,14 @@ impl From<crate::api::groq::GroqError> for CommandError {
     }
 }
 
+impl From<crate::api::translate::TranslateError> for CommandError {
+    fn from(e: crate::api::translate::TranslateError) -> Self {
+        CommandError {
+            message: e.to_string(),
+        }
+    }
+}
+
 /// Get papers from database, optionally filtered by category
 #[tauri::command]
 pub async fn get_papers(
@@ -55,6 +63,7 @@ pub async fn fetch_papers(
 ) -> Result<Vec<Paper>, CommandError> {
     let db_path = &state.db_path;
     let arxiv_client = ArxivClient::new();
+    let translate_client = TranslateClient::new();
     
     // Fetch papers from all categories (10 papers per category)
     let arxiv_papers = arxiv_client.fetch_all_categories(10).await?;
@@ -62,10 +71,14 @@ pub async fn fetch_papers(
     // Save to database
     let conn = db::get_connection(db_path)?;
     
+    // Collect paper IDs that need translation
+    let mut papers_to_translate: Vec<(String, String)> = Vec::new();
+    
     for (arxiv_paper, category_name, task_slug) in &arxiv_papers {
         let paper = Paper {
             id: arxiv_paper.id.clone(),
             title: arxiv_paper.title.clone(),
+            title_ja: None, // Will be translated below
             r#abstract: Some(arxiv_paper.summary.clone()),
             summary_ja: None,
             url_pdf: Some(arxiv_paper.pdf_url.clone()),
@@ -77,6 +90,22 @@ pub async fn fetch_papers(
         
         db::upsert_paper(&conn, &paper)?;
         db::insert_paper_task(&conn, &paper.id, task_slug, category_name)?;
+        
+        // Add to translation queue
+        papers_to_translate.push((arxiv_paper.id.clone(), arxiv_paper.title.clone()));
+    }
+    
+    // Translate titles (with rate limiting built into the client)
+    for (paper_id, title) in &papers_to_translate {
+        match translate_client.translate_to_japanese(title).await {
+            Ok(title_ja) => {
+                let _ = db::update_paper_title_ja(&conn, paper_id, &title_ja);
+            }
+            Err(e) => {
+                // Log error but continue - translation failure shouldn't stop the process
+                eprintln!("Translation error for {}: {}", paper_id, e);
+            }
+        }
     }
     
     // Return updated papers from database

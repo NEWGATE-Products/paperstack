@@ -4,6 +4,8 @@ use serde::{Deserialize, Serialize};
 pub struct Paper {
     pub id: String,
     pub title: String,
+    #[serde(rename = "titleJa")]
+    pub title_ja: Option<String>,
     #[serde(rename = "abstract")]
     pub r#abstract: Option<String>,
     #[serde(rename = "summaryJa")]

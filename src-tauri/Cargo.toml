@@ -21,6 +21,7 @@ rusqlite = { version = "0.33", features = ["bundled"] }
 reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
 tokio = { version = "1", features = ["rt", "time", "macros"] }
 thiserror = "2"
+urlencoding = "2"
 
 [profile.release]
 panic = "abort"
