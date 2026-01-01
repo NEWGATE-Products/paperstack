@@ -1,3 +1,5 @@
+import { IconBooks, IconRefresh, IconSettings } from "./icons";
+
 interface HeaderProps {
   onRefresh?: () => void;
   onOpenSettings: () => void;
@@ -11,7 +13,7 @@ export function Header({ onRefresh, onOpenSettings, isLoading, hasApiKey }: Head
       <div className="header-content">
         <div>
           <h1 className="header-title">
-            <span className="header-title-icon">📚</span>
+            <span className="header-title-icon"><IconBooks size={28} /></span>
             AI Paper News
           </h1>
           <p className="header-subtitle">
@@ -32,7 +34,7 @@ export function Header({ onRefresh, onOpenSettings, isLoading, hasApiKey }: Head
                 </>
               ) : (
                 <>
-                  🔄 最新を取得
+                  <IconRefresh size={16} /> 最新を取得
                 </>
               )}
             </button>
@@ -42,7 +44,7 @@ export function Header({ onRefresh, onOpenSettings, isLoading, hasApiKey }: Head
             onClick={onOpenSettings}
             title={hasApiKey ? "APIキー設定済み" : "APIキー未設定"}
           >
-            ⚙️ {!hasApiKey && <span style={{ color: "#fca5a5" }}>!</span>}
+            <IconSettings size={18} /> {!hasApiKey && <span style={{ color: "#fca5a5" }}>!</span>}
           </button>
         </div>
       </div>

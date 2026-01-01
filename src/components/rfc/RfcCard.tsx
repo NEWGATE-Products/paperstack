@@ -2,6 +2,21 @@ import { useState } from "react";
 import type { Rfc, SummaryLevel } from "../../types/rfc";
 import { getCategoryName } from "../../types/rfc";
 import { RfcStatusBadge } from "./RfcStatusBadge";
+import {
+  IconDocument,
+  IconGlobe,
+  IconStarFilled,
+  IconStarEmpty,
+  IconBalloon,
+  IconEdit,
+  IconWrench,
+  IconRefresh,
+  IconChevronUp,
+  IconChevronDown,
+  IconCalendar,
+  IconBook,
+  IconPin,
+} from "../icons";
 
 interface RfcCardProps {
   rfc: Rfc;
@@ -78,7 +93,7 @@ export function RfcCard({
       {/* Header */}
       <div className="rfc-card-header">
         <div className="rfc-card-title-row">
-          <span className="rfc-number">📄 {rfc.id}</span>
+          <span className="rfc-number"><IconDocument size={16} className="inline-icon" /> {rfc.id}</span>
           <div className="rfc-card-actions">
             {!rfc.titleJa && (
               <button
@@ -88,7 +103,7 @@ export function RfcCard({
                 disabled={isTranslatingTitle}
                 title="タイトルを日本語に翻訳"
               >
-                {isTranslatingTitle ? "..." : "🌐"}
+                {isTranslatingTitle ? "..." : <IconGlobe size={14} />}
               </button>
             )}
             <button
@@ -97,12 +112,12 @@ export function RfcCard({
               onClick={() => onToggleBookmark(rfc.id, rfc.isBookmarked)}
               title={rfc.isBookmarked ? "ブックマーク解除" : "ブックマーク"}
             >
-              {rfc.isBookmarked ? "⭐" : "☆"}
+              {rfc.isBookmarked ? <IconStarFilled size={20} /> : <IconStarEmpty size={20} />}
             </button>
           </div>
         </div>
         <h3 className="rfc-title">{rfc.title}</h3>
-        {rfc.titleJa && <p className="rfc-title-ja">📌 {rfc.titleJa}</p>}
+        {rfc.titleJa && <p className="rfc-title-ja"><IconPin size={14} className="inline-icon" /> {rfc.titleJa}</p>}
       </div>
 
       {/* Summary Section (かんたんモード) */}
@@ -113,21 +128,21 @@ export function RfcCard({
             className={`tab ${summaryLevel === "easy" ? "active" : ""}`}
             onClick={() => setSummaryLevel("easy")}
           >
-            🎈 かんたん
+            <IconBalloon size={14} className="inline-icon" /> かんたん
           </button>
           <button
             type="button"
             className={`tab ${summaryLevel === "normal" ? "active" : ""}`}
             onClick={() => setSummaryLevel("normal")}
           >
-            📝 一般
+            <IconEdit size={14} className="inline-icon" /> 一般
           </button>
           <button
             type="button"
             className={`tab ${summaryLevel === "technical" ? "active" : ""}`}
             onClick={() => setSummaryLevel("technical")}
           >
-            🔧 技術者
+            <IconWrench size={14} className="inline-icon" /> 技術者
           </button>
         </div>
 
@@ -143,7 +158,7 @@ export function RfcCard({
                 onClick={handleGenerateSummary}
                 disabled={isGenerating}
               >
-                {isGenerating ? "生成中..." : "🔄 要約を生成"}
+                {isGenerating ? "生成中..." : <><IconRefresh size={14} className="inline-icon" /> 要約を生成</>}
               </button>
             </div>
           )}
@@ -159,7 +174,7 @@ export function RfcCard({
               className="expand-btn"
               onClick={() => setExpanded(!expanded)}
             >
-              📝 概要 {expanded ? "▲" : "▼"}
+              <IconEdit size={14} className="inline-icon" /> 概要 {expanded ? <IconChevronUp size={12} /> : <IconChevronDown size={12} />}
             </button>
             {expanded && !rfc.abstractJa && (
               <button
@@ -169,7 +184,7 @@ export function RfcCard({
                 disabled={isTranslatingAbstract}
                 title="日本語に翻訳"
               >
-                {isTranslatingAbstract ? "翻訳中..." : "🌐 翻訳"}
+                {isTranslatingAbstract ? "翻訳中..." : <><IconGlobe size={12} className="inline-icon" /> 翻訳</>}
               </button>
             )}
           </div>
@@ -200,14 +215,14 @@ export function RfcCard({
           </span>
         ))}
         {rfc.publishedDate && (
-          <span className="date-badge">📅 {rfc.publishedDate}</span>
+          <span className="date-badge"><IconCalendar size={12} className="inline-icon" /> {rfc.publishedDate}</span>
         )}
       </div>
 
       {/* Actions */}
       <div className="rfc-actions">
         <button type="button" className="action-btn primary" onClick={() => onViewDetail(rfc)}>
-          📖 詳細を見る
+          <IconBook size={14} className="inline-icon" /> 詳細を見る
         </button>
       </div>
     </div>

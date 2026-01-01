@@ -5,6 +5,7 @@ import { RfcFilter } from "./RfcFilter";
 import { RfcDetail } from "./RfcDetail";
 import { useRfcs } from "../../hooks/useRfcs";
 import { useRfcBookmarks } from "../../hooks/useRfcBookmarks";
+import { IconWarning, IconDocument } from "../icons";
 
 export function RfcList() {
   const {
@@ -70,7 +71,7 @@ export function RfcList() {
       {/* Error Message */}
       {error && (
         <div className="error-message">
-          <p>⚠️ エラー: {error}</p>
+          <p><IconWarning size={16} className="inline-icon" /> エラー: {error}</p>
         </div>
       )}
 
@@ -85,7 +86,7 @@ export function RfcList() {
       {/* Empty State */}
       {!loading && rfcs.length === 0 && (
         <div className="empty-state">
-          <p>📄 RFCが見つかりません</p>
+          <p><IconDocument size={20} className="inline-icon" /> RFCが見つかりません</p>
           <p className="hint">
             「更新」ボタンを押してRFCデータを取得してください
           </p>

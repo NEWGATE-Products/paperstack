@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { open } from "@tauri-apps/plugin-shell";
 import type { Paper } from "../types";
+import { IconLightbulb, IconSparkle, IconError, IconTag, IconPdf, IconLink, IconCrystalBall } from "./icons";
 
 interface PaperCardProps {
   paper: Paper;
@@ -20,7 +21,7 @@ export function PaperCard({ paper, onGenerateSummary }: PaperCardProps) {
       const message = e instanceof Error ? e.message : "要約生成に失敗しました";
       // Make API key error more user-friendly
       if (message.includes("GROQ_API_KEY") || message.includes("Missing API key") || message.includes("APIキー")) {
-        setError("APIキーが未設定です。⚙️設定からAPIキーを入力してください。");
+        setError("APIキーが未設定です。設定からAPIキーを入力してください。");
       } else {
         setError(message);
       }
@@ -84,13 +85,13 @@ export function PaperCard({ paper, onGenerateSummary }: PaperCardProps) {
 
       <div className="paper-summary">
         {paper.summaryJa ? (
-          <p>💡 {paper.summaryJa}</p>
+          <p><IconLightbulb size={16} className="inline-icon" /> {paper.summaryJa}</p>
         ) : (
           <div className="paper-summary-placeholder">
             {isGenerating ? (
-              <span>✨ 要約を生成中...</span>
+              <span><IconSparkle size={16} className="inline-icon" /> 要約を生成中...</span>
             ) : error ? (
-              <span style={{ color: "#991b1b" }}>❌ {error}</span>
+              <span style={{ color: "#991b1b" }}><IconError size={16} className="inline-icon" /> {error}</span>
             ) : (
               <>
                 <span>要約がありません。</span>
@@ -99,7 +100,7 @@ export function PaperCard({ paper, onGenerateSummary }: PaperCardProps) {
                   onClick={handleGenerateSummary}
                   disabled={isGenerating}
                 >
-                  🔮 AIで要約を生成
+                  <IconCrystalBall size={14} className="inline-icon" /> AIで要約を生成
                 </button>
               </>
             )}
@@ -111,7 +112,7 @@ export function PaperCard({ paper, onGenerateSummary }: PaperCardProps) {
         <div className="paper-tags">
           {paper.tasks.map((task) => (
             <span key={task} className="paper-tag">
-              🏷️ {formatTaskName(task)}
+              <IconTag size={12} className="inline-icon" /> {formatTaskName(task)}
             </span>
           ))}
         </div>
@@ -125,7 +126,7 @@ export function PaperCard({ paper, onGenerateSummary }: PaperCardProps) {
                 openExternal(paper.urlPdf!);
               }}
             >
-              📄 PDF
+              <IconPdf size={14} className="inline-icon" /> PDF
             </a>
           )}
           {paper.urlPaper && (
@@ -137,7 +138,7 @@ export function PaperCard({ paper, onGenerateSummary }: PaperCardProps) {
                 openExternal(paper.urlPaper!);
               }}
             >
-              🔗 論文ページ
+              <IconLink size={14} className="inline-icon" /> 論文ページ
             </a>
           )}
         </div>

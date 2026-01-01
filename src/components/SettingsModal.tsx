@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { open } from "@tauri-apps/plugin-shell";
 import type { Settings } from "../types";
+import { IconSettings, IconTrash } from "./icons";
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -61,7 +62,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>⚙️ 設定</h2>
+          <h2><IconSettings size={20} className="inline-icon" /> 設定</h2>
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
         
@@ -118,7 +119,7 @@ export function SettingsModal({ isOpen, onClose, settings, onSave }: SettingsMod
                 onClick={handleClear}
                 disabled={isSaving}
               >
-                🗑️ APIキーを削除
+                <IconTrash size={14} className="inline-icon" /> APIキーを削除
               </button>
             )}
             

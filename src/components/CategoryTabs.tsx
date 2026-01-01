@@ -1,4 +1,5 @@
 import type { Category } from "../types";
+import { IconNews, IconRobot, IconChat, IconComputer, IconCalculator, IconBuilding, IconDocument } from "./icons";
 
 interface CategoryTabsProps {
   categories: Category[];
@@ -20,7 +21,7 @@ export function CategoryTabs({
             className={`category-tab ${selectedCategory === category.id ? "active" : ""}`}
             onClick={() => onSelect(category.id)}
           >
-            {getCategoryIcon(category.id)} {category.name}
+            <CategoryIcon categoryId={category.id} /> {category.name}
           </button>
         ))}
       </div>
@@ -28,22 +29,22 @@ export function CategoryTabs({
   );
 }
 
-function getCategoryIcon(categoryId: string): string {
+function CategoryIcon({ categoryId }: { categoryId: string }) {
   switch (categoryId) {
     case "all":
-      return "📰";
+      return <IconNews size={16} />;
     case "ai":
-      return "🤖";
+      return <IconRobot size={16} />;
     case "llm":
-      return "💬";
+      return <IconChat size={16} />;
     case "code":
-      return "💻";
+      return <IconComputer size={16} />;
     case "algorithm":
-      return "🧮";
+      return <IconCalculator size={16} />;
     case "architecture":
-      return "🏗️";
+      return <IconBuilding size={16} />;
     default:
-      return "📄";
+      return <IconDocument size={16} />;
   }
 }
 

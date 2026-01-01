@@ -7,6 +7,7 @@ import { RfcList } from "./components/rfc";
 import { usePapers } from "./hooks/usePapers";
 import { useCategories } from "./hooks/useCategories";
 import { useSettings } from "./hooks/useSettings";
+import { IconBooks, IconDocument } from "./components/icons";
 import "./styles/index.css";
 
 type MainTab = "papers" | "rfc";
@@ -62,13 +63,13 @@ function App() {
           className={`main-tab ${mainTab === "papers" ? "active" : ""}`}
           onClick={() => setMainTab("papers")}
         >
-          📚 論文
+          <IconBooks size={18} /> 論文
         </button>
         <button
           className={`main-tab ${mainTab === "rfc" ? "active" : ""}`}
           onClick={() => setMainTab("rfc")}
         >
-          📄 RFC
+          <IconDocument size={18} /> RFC
         </button>
       </div>
 

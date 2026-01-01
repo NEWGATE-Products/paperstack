@@ -61,6 +61,14 @@
   box-sizing: border-box;
 }
 
+/* Inline icon utility class */
+.inline-icon {
+  display: inline-flex;
+  vertical-align: middle;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
 html {
   font-size: 16px;
 }
@@ -119,6 +127,8 @@ body {
 
 .header-title-icon {
   font-size: 1.5rem;
+  display: inline-flex;
+  align-items: center;
 }
 
 .header-subtitle {
@@ -196,6 +206,9 @@ body {
   transition: all var(--transition-fast);
   white-space: nowrap;
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
 }
 
 .category-tab::after {
@@ -355,6 +368,8 @@ body {
   border-radius: var(--radius-sm);
   font-size: 0.75rem;
   font-weight: 500;
+  display: flex;
+  align-items: center;
 }
 
 .paper-links {
@@ -366,7 +381,7 @@ body {
   font-size: 0.8rem;
   color: var(--color-accent-primary);
   text-decoration: none;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: var(--space-xs);
   padding: var(--space-xs) var(--space-sm);
@@ -415,6 +430,8 @@ body {
   font-size: 3rem;
   margin-bottom: var(--space-md);
   opacity: 0.5;
+  display: flex;
+  justify-content: center;
 }
 
 .empty-state-title {
@@ -531,6 +548,8 @@ body {
   font-size: 1.25rem;
   font-weight: 600;
   margin: 0;
+  display: flex;
+  align-items: center;
 }
 
 .modal-close {
@@ -655,6 +674,8 @@ body {
   font-size: 0.875rem;
   cursor: pointer;
   transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
 }
 
 .btn-danger:hover:not(:disabled) {
@@ -714,6 +735,9 @@ body {
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
 }
 
 .main-tab:hover {
@@ -792,6 +816,8 @@ body {
   cursor: pointer;
   font-weight: 500;
   transition: background var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
 }
 
 .search-btn:hover, .refresh-btn:hover {
@@ -943,6 +969,8 @@ body {
   font-size: 1rem;
   font-weight: 700;
   color: var(--rfc-accent-primary);
+  display: flex;
+  align-items: center;
 }
 
 .rfc-title {
@@ -957,6 +985,8 @@ body {
   font-size: 0.9rem;
   color: var(--color-text-secondary);
   margin-top: var(--space-xs);
+  display: flex;
+  align-items: center;
 }
 
 .bookmark-btn {
@@ -996,6 +1026,8 @@ body {
   font-size: 0.8rem;
   cursor: pointer;
   transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
 }
 
 .summary-level-tabs .tab:hover {
@@ -1039,6 +1071,8 @@ body {
   cursor: pointer;
   font-weight: 500;
   transition: background var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
 }
 
 .generate-btn:hover {
@@ -1067,7 +1101,7 @@ body {
   color: var(--color-text-secondary);
   font-size: 0.875rem;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: var(--space-xs);
 }
@@ -1091,6 +1125,8 @@ body {
   font-size: 0.75rem;
   cursor: pointer;
   transition: background 0.2s;
+  display: inline-flex;
+  align-items: center;
 }
 
 .translate-btn:hover:not(:disabled) {
@@ -1171,6 +1207,8 @@ body {
 .date-badge, .authors-badge {
   font-size: 0.8rem;
   color: var(--color-text-muted);
+  display: inline-flex;
+  align-items: center;
 }
 
 /* Actions */
@@ -1191,6 +1229,8 @@ body {
   transition: all var(--transition-fast);
   text-decoration: none;
   color: var(--color-text-primary);
+  display: inline-flex;
+  align-items: center;
 }
 
 .action-btn:hover {
@@ -1295,6 +1335,8 @@ body {
 .detail-rfc-number {
   font-size: 1rem;
   opacity: 0.9;
+  display: flex;
+  align-items: center;
 }
 
 .detail-title {
@@ -1355,6 +1397,8 @@ body {
   font-weight: 700;
   margin-bottom: var(--space-md);
   color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
 }
 
 .section-header {
@@ -1379,6 +1423,8 @@ body {
   cursor: pointer;
   transition: all var(--transition-fast);
   font-weight: 500;
+  display: inline-flex;
+  align-items: center;
 }
 
 .summary-tab:hover {

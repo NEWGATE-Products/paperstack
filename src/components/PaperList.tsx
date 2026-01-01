@@ -1,5 +1,6 @@
 import type { Paper, LoadingState } from "../types";
 import { PaperCard } from "./PaperCard";
+import { IconError, IconRefresh, IconMailbox } from "./icons";
 
 interface PaperListProps {
   papers: Paper[];
@@ -28,9 +29,9 @@ export function PaperList({
   if (error) {
     return (
       <div className="error-state">
-        <p>❌ エラーが発生しました: {error}</p>
+        <p><IconError size={16} className="inline-icon" /> エラーが発生しました: {error}</p>
         <button className="btn btn-primary" onClick={onRefresh} style={{ marginTop: 16 }}>
-          🔄 再試行
+          <IconRefresh size={14} className="inline-icon" /> 再試行
         </button>
       </div>
     );
@@ -39,13 +40,13 @@ export function PaperList({
   if (papers.length === 0) {
     return (
       <div className="empty-state">
-        <div className="empty-state-icon">📭</div>
+        <div className="empty-state-icon"><IconMailbox size={48} /></div>
         <h3 className="empty-state-title">論文がありません</h3>
         <p className="empty-state-description">
           「最新を取得」ボタンを押して、最新の論文を取得してください。
         </p>
         <button className="btn btn-primary" onClick={onRefresh}>
-          🔄 最新を取得
+          <IconRefresh size={14} className="inline-icon" /> 最新を取得
         </button>
       </div>
     );

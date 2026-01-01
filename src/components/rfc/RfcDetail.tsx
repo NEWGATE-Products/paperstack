@@ -3,6 +3,20 @@ import type { Rfc, SummaryLevel } from "../../types/rfc";
 import { getCategoryName } from "../../types/rfc";
 import { RfcStatusBadge } from "./RfcStatusBadge";
 import { useRfcDetail } from "../../hooks/useRfcDetail";
+import {
+  IconDocument,
+  IconCalendar,
+  IconUser,
+  IconWarning,
+  IconLightbulb,
+  IconBalloon,
+  IconEdit,
+  IconWrench,
+  IconRefresh,
+  IconComputer,
+  IconTag,
+  IconLink,
+} from "../icons";
 
 interface RfcDetailProps {
   rfc: Rfc;
@@ -66,7 +80,7 @@ export function RfcDetail({ rfc: initialRfc, onClose }: RfcDetailProps) {
         {/* Header */}
         <div className="detail-header">
           <div className="detail-title-section">
-            <span className="detail-rfc-number">📄 {currentRfc.id}</span>
+            <span className="detail-rfc-number"><IconDocument size={16} className="inline-icon" /> {currentRfc.id}</span>
             <h2 className="detail-title">{currentRfc.title}</h2>
             {currentRfc.titleJa && (
               <p className="detail-title-ja">{currentRfc.titleJa}</p>
@@ -86,11 +100,11 @@ export function RfcDetail({ rfc: initialRfc, onClose }: RfcDetailProps) {
             </span>
           ))}
           {currentRfc.publishedDate && (
-            <span className="date-badge">📅 {currentRfc.publishedDate}</span>
+            <span className="date-badge"><IconCalendar size={12} className="inline-icon" /> {currentRfc.publishedDate}</span>
           )}
           {currentRfc.authors.length > 0 && (
             <span className="authors-badge">
-              👤 {currentRfc.authors.slice(0, 3).join(", ")}
+              <IconUser size={12} className="inline-icon" /> {currentRfc.authors.slice(0, 3).join(", ")}
               {currentRfc.authors.length > 3 && ` 他${currentRfc.authors.length - 3}名`}
             </span>
           )}
@@ -99,13 +113,13 @@ export function RfcDetail({ rfc: initialRfc, onClose }: RfcDetailProps) {
         {/* Error */}
         {error && (
           <div className="detail-error">
-            <p>⚠️ {error}</p>
+            <p><IconWarning size={16} className="inline-icon" /> {error}</p>
           </div>
         )}
 
         {/* Summary Section */}
         <div className="detail-section">
-          <h3 className="section-title">💡 要約</h3>
+          <h3 className="section-title"><IconLightbulb size={18} className="inline-icon" /> 要約</h3>
           
           <div className="summary-tabs">
             <button
@@ -113,21 +127,21 @@ export function RfcDetail({ rfc: initialRfc, onClose }: RfcDetailProps) {
               className={`summary-tab ${activeTab === "easy" ? "active" : ""}`}
               onClick={() => setActiveTab("easy")}
             >
-              🎈 かんたん
+              <IconBalloon size={14} className="inline-icon" /> かんたん
             </button>
             <button
               type="button"
               className={`summary-tab ${activeTab === "normal" ? "active" : ""}`}
               onClick={() => setActiveTab("normal")}
             >
-              📝 一般
+              <IconEdit size={14} className="inline-icon" /> 一般
             </button>
             <button
               type="button"
               className={`summary-tab ${activeTab === "technical" ? "active" : ""}`}
               onClick={() => setActiveTab("technical")}
             >
-              🔧 技術者
+              <IconWrench size={14} className="inline-icon" /> 技術者
             </button>
           </div>
 
@@ -148,7 +162,7 @@ export function RfcDetail({ rfc: initialRfc, onClose }: RfcDetailProps) {
                   onClick={handleGenerateSummary}
                   disabled={loadingSummary}
                 >
-                  🔄 要約を生成
+                  <IconRefresh size={14} className="inline-icon" /> 要約を生成
                 </button>
               </div>
             )}
@@ -159,7 +173,7 @@ export function RfcDetail({ rfc: initialRfc, onClose }: RfcDetailProps) {
         {activeTab === "technical" && (
           <div className="detail-section implementation-section">
             <div className="section-header">
-              <h3 className="section-title">💻 実装ガイド</h3>
+              <h3 className="section-title"><IconComputer size={18} className="inline-icon" /> 実装ガイド</h3>
               {!currentRfc.implementationGuide && !showImplementationGuide && (
                 <button
                   type="button"
@@ -191,7 +205,7 @@ export function RfcDetail({ rfc: initialRfc, onClose }: RfcDetailProps) {
 
         {/* Abstract Section */}
         <div className="detail-section">
-          <h3 className="section-title">📄 概要 (Abstract)</h3>
+          <h3 className="section-title"><IconDocument size={18} className="inline-icon" /> 概要 (Abstract)</h3>
           <div className="abstract-panel">
             {currentRfc.abstract ? (
               <p className="abstract-text">{currentRfc.abstract}</p>
@@ -204,7 +218,7 @@ export function RfcDetail({ rfc: initialRfc, onClose }: RfcDetailProps) {
         {/* Keywords */}
         {currentRfc.keywords.length > 0 && (
           <div className="detail-section">
-            <h3 className="section-title">🏷️ キーワード</h3>
+            <h3 className="section-title"><IconTag size={18} className="inline-icon" /> キーワード</h3>
             <div className="keywords">
               {currentRfc.keywords.map((kw, i) => (
                 <span key={i} className="keyword-tag">
@@ -223,7 +237,7 @@ export function RfcDetail({ rfc: initialRfc, onClose }: RfcDetailProps) {
             rel="noopener noreferrer"
             className="action-btn external"
           >
-            🔗 RFC本文を見る
+            <IconLink size={14} className="inline-icon" /> RFC本文を見る
           </a>
           <button type="button" className="action-btn" onClick={onClose}>
             閉じる

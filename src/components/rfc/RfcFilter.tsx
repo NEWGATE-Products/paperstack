@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import type { RfcFilter as RfcFilterType } from "../../types/rfc";
 import { RFC_CATEGORIES, RFC_STATUSES } from "../../types/rfc";
+import { IconSearch, IconRefresh } from "../icons";
 
 interface RfcFilterProps {
   filter: RfcFilterType;
@@ -142,7 +143,7 @@ export function RfcFilter({
             className="filter-input small"
           />
           <button type="submit" className="search-btn">
-            🔍
+            <IconSearch size={16} />
           </button>
         </form>
 
@@ -155,7 +156,7 @@ export function RfcFilter({
             className="filter-input"
           />
           <button type="submit" className="search-btn">
-            🔍
+            <IconSearch size={16} />
           </button>
         </form>
 
@@ -166,7 +167,7 @@ export function RfcFilter({
           disabled={isRefreshing || loading}
           title="RFC一覧を更新"
         >
-          {isRefreshing ? "更新中..." : "🔄 更新"}
+          {isRefreshing ? "更新中..." : <><IconRefresh size={14} className="inline-icon" /> 更新</>}
         </button>
       </div>
 
