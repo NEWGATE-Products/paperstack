@@ -74,6 +74,154 @@ impl GroqClient {
             title, abstract_text
         );
 
+        self.chat_completion(api_key, system_prompt, &user_prompt, 256, 0.3).await
+    }
+    
+    // ========================================================================
+    // RFC Summary Methods
+    // ========================================================================
+    
+    /// Generate RFC summary - Easy level (for elementary school students)
+    pub async fn generate_rfc_summary_easy(
+        &self,
+        rfc_number: i32,
+        title: &str,
+        abstract_text: &str,
+    ) -> Result<String, GroqError> {
+        let api_key = self.api_key.as_ref().ok_or(GroqError::MissingApiKey)?;
+
+        let system_prompt = r#"あなたは小学生にインターネットの仕組みを教える先生です。
+以下のRFCの内容を、小学5年生でもわかるように1〜2文で説明してください。
+
+ルール:
+- 難しい言葉は使わない
+- 身近な例えを使う
+- 絵文字を1つ使ってもOK
+- 「〜だよ」「〜なんだ」のような口調で"#;
+
+        let user_prompt = format!(
+            "RFC番号: {}\nタイトル: {}\n概要: {}",
+            rfc_number, title, abstract_text
+        );
+
+        self.chat_completion(api_key, system_prompt, &user_prompt, 256, 0.5).await
+    }
+    
+    /// Generate RFC summary - Normal level (for general audience)
+    pub async fn generate_rfc_summary_normal(
+        &self,
+        rfc_number: i32,
+        title: &str,
+        abstract_text: &str,
+    ) -> Result<String, GroqError> {
+        let api_key = self.api_key.as_ref().ok_or(GroqError::MissingApiKey)?;
+
+        let system_prompt = "以下のRFCの内容を、IT知識のない一般の方にもわかるように日本語で2〜3文で要約してください。";
+
+        let user_prompt = format!(
+            "RFC番号: {}\nタイトル: {}\n概要: {}",
+            rfc_number, title, abstract_text
+        );
+
+        self.chat_completion(api_key, system_prompt, &user_prompt, 384, 0.3).await
+    }
+    
+    /// Generate RFC summary - Technical level (for engineers)
+    pub async fn generate_rfc_summary_technical(
+        &self,
+        rfc_number: i32,
+        title: &str,
+        abstract_text: &str,
+    ) -> Result<String, GroqError> {
+        let api_key = self.api_key.as_ref().ok_or(GroqError::MissingApiKey)?;
+
+        let system_prompt = "以下のRFCの内容を、ソフトウェアエンジニア向けに技術的なポイントを含めて日本語で3〜4文で要約してください。";
+
+        let user_prompt = format!(
+            "RFC番号: {}\nタイトル: {}\n概要: {}",
+            rfc_number, title, abstract_text
+        );
+
+        self.chat_completion(api_key, system_prompt, &user_prompt, 512, 0.3).await
+    }
+    
+    /// Generate RFC implementation guide
+    pub async fn generate_rfc_implementation_guide(
+        &self,
+        rfc_number: i32,
+        title: &str,
+        abstract_text: &str,
+    ) -> Result<String, GroqError> {
+        let api_key = self.api_key.as_ref().ok_or(GroqError::MissingApiKey)?;
+
+        let system_prompt = r#"あなたはシニアソフトウェアエンジニアです。
+以下のRFCが定義するプロトコル/仕様を実装する場合のガイドを日本語で作成してください。
+
+## 出力フォーマット（Markdown）:
+
+### 実装可否
+- このRFCは実装可能か（プロトコル/アルゴリズム/データ形式など）
+- 実装不可の場合（情報提供のみ、運用ガイドライン等）はその旨を記載
+
+### 実装概要（実装可能な場合）
+- 主要コンポーネント/モジュール構成
+- データ構造の概要
+
+### 推奨技術スタック
+- 言語: (例: Rust, Go, Python)
+- ライブラリ: (例: tokio, hyper)
+- 既存実装の例: (例: curl, nginx)
+
+### 実装時の注意点
+- セキュリティ考慮事項
+- パフォーマンス最適化ポイント
+- エッジケース・例外処理
+
+### 参考リソース
+- 関連RFC
+- 公式テストスイート（あれば）
+- 参考となるOSS実装"#;
+
+        let user_prompt = format!(
+            "RFC番号: {}\nタイトル: {}\n概要: {}",
+            rfc_number, title, abstract_text
+        );
+
+        self.chat_completion(api_key, system_prompt, &user_prompt, 1024, 0.3).await
+    }
+    
+    /// Translate RFC section to Japanese
+    pub async fn translate_rfc_section(&self, text: &str) -> Result<String, GroqError> {
+        let api_key = self.api_key.as_ref().ok_or(GroqError::MissingApiKey)?;
+
+        let system_prompt = "以下の英語のRFC文書を日本語に翻訳してください。技術用語は適切に訳すか、原語をカタカナで表記してください。";
+
+        self.chat_completion(api_key, system_prompt, text, 2048, 0.2).await
+    }
+    
+    /// Translate RFC title to Japanese
+    pub async fn translate_rfc_title(&self, title: &str) -> Result<String, GroqError> {
+        let api_key = self.api_key.as_ref().ok_or(GroqError::MissingApiKey)?;
+
+        let system_prompt = "以下の英語のRFCタイトルを日本語に翻訳してください。
+技術用語は適切に訳すか、原語をカタカナで表記してください。
+翻訳結果のみを出力し、説明や補足は不要です。";
+
+        self.chat_completion(api_key, system_prompt, title, 256, 0.2).await
+    }
+    
+    // ========================================================================
+    // Helper Methods
+    // ========================================================================
+    
+    async fn chat_completion(
+        &self,
+        api_key: &str,
+        system_prompt: &str,
+        user_prompt: &str,
+        max_tokens: i32,
+        temperature: f32,
+    ) -> Result<String, GroqError> {
         let request = ChatRequest {
             model: MODEL.to_string(),
             messages: vec![
@@ -83,11 +231,11 @@ impl GroqClient {
                 },
                 Message {
                     role: "user".to_string(),
-                    content: user_prompt,
+                    content: user_prompt.to_string(),
                 },
             ],
-            max_tokens: 256,
-            temperature: 0.3,
+            max_tokens,
+            temperature,
         };
 
         let response = self

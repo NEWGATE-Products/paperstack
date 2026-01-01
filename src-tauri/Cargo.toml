@@ -22,6 +22,7 @@ reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-feature
 tokio = { version = "1", features = ["rt", "time", "macros"] }
 thiserror = "2"
 urlencoding = "2"
+quick-xml = "0.31"
 
 [profile.release]
 panic = "abort"

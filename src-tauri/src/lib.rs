@@ -36,12 +36,30 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            // Paper commands
             commands::get_papers,
             commands::fetch_papers,
             commands::generate_summary,
             commands::get_categories,
             commands::get_settings,
             commands::save_settings,
+            // RFC commands
+            commands::rfc_commands::get_rfcs,
+            commands::rfc_commands::fetch_rfcs,
+            commands::rfc_commands::get_rfc_by_id,
+            commands::rfc_commands::get_rfc_content,
+            commands::rfc_commands::generate_rfc_summary,
+            commands::rfc_commands::generate_rfc_implementation_guide,
+            commands::rfc_commands::translate_rfc_section,
+            commands::rfc_commands::translate_rfc_abstract,
+            commands::rfc_commands::translate_rfc_title,
+            commands::rfc_commands::add_rfc_bookmark,
+            commands::rfc_commands::remove_rfc_bookmark,
+            commands::rfc_commands::get_rfc_bookmarks,
+            commands::rfc_commands::add_rfc_history,
+            commands::rfc_commands::get_rfc_history,
+            commands::rfc_commands::get_rfc_categories,
+            commands::rfc_commands::get_rfc_count,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -1,0 +1,15 @@
+{
+  "name": "RFCかんたんリーダー",
+  "slug": "rfc-easy-reader",
+  "description": "AIと翻訳機能を使ってRFCを見やすく表示する機能。絞り込み機能・要約機能付き。小学生でもわかるレベルで見やすい表示を提供する。",
+  "language": "ja",
+  "created": "2026-01-01",
+  "implemented": "2026-01-01",
+  "status": {
+    "requirements": "approved",
+    "design": "approved",
+    "tasks": "approved",
+    "implementation": "completed"
+  }
+}
+

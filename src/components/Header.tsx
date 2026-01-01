@@ -1,5 +1,5 @@
 interface HeaderProps {
-  onRefresh: () => void;
+  onRefresh?: () => void;
   onOpenSettings: () => void;
   isLoading: boolean;
   hasApiKey: boolean;
@@ -15,26 +15,28 @@ export function Header({ onRefresh, onOpenSettings, isLoading, hasApiKey }: Head
             AI Paper News
           </h1>
           <p className="header-subtitle">
-            AI・LLM・プログラミング関連の最新論文をお届け
+            AI・LLM・プログラミング関連の最新論文・RFCをお届け
           </p>
         </div>
         <div className="header-actions">
-          <button
-            className="btn btn-primary"
-            onClick={onRefresh}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <span className="loading-spinner" style={{ width: 16, height: 16, borderWidth: 2 }} />
-                取得中...
-              </>
-            ) : (
-              <>
-                🔄 最新を取得
-              </>
-            )}
-          </button>
+          {onRefresh && (
+            <button
+              className="btn btn-primary"
+              onClick={onRefresh}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <span className="loading-spinner" style={{ width: 16, height: 16, borderWidth: 2 }} />
+                  取得中...
+                </>
+              ) : (
+                <>
+                  🔄 最新を取得
+                </>
+              )}
+            </button>
+          )}
           <button
             className="btn btn-primary"
             onClick={onOpenSettings}

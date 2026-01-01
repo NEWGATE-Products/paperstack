@@ -1,4 +1,5 @@
 pub mod models;
+pub mod rfc_queries;
 
 use rusqlite::{Connection, Result};
 
@@ -6,6 +7,7 @@ use rusqlite::{Connection, Result};
 pub fn init_db(db_path: &str) -> Result<()> {
     let conn = Connection::open(db_path)?;
     
+    // Papers tables (existing)
     conn.execute_batch(
         "
         CREATE TABLE IF NOT EXISTS papers (
@@ -33,6 +35,71 @@ pub fn init_db(db_path: &str) -> Result<()> {
         CREATE INDEX IF NOT EXISTS idx_paper_tasks_slug ON paper_tasks(task_slug);
         "
     )?;
+    
+    // RFC tables (new)
+    conn.execute_batch(
+        "
+        -- RFC メインテーブル
+        CREATE TABLE IF NOT EXISTS rfcs (
+            id TEXT PRIMARY KEY,
+            number INTEGER NOT NULL UNIQUE,
+            title TEXT NOT NULL,
+            abstract TEXT,
+            status TEXT NOT NULL DEFAULT '',
+            published_date TEXT,
+            authors TEXT NOT NULL DEFAULT '[]',
+            keywords TEXT NOT NULL DEFAULT '[]',
+            summary_easy TEXT,
+            summary_normal TEXT,
+            summary_technical TEXT,
+            implementation_guide TEXT,
+            title_ja TEXT,
+            abstract_ja TEXT,
+            fetched_at TEXT DEFAULT (datetime('now')),
+            updated_at TEXT DEFAULT (datetime('now'))
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_rfcs_number ON rfcs(number);
+        CREATE INDEX IF NOT EXISTS idx_rfcs_status ON rfcs(status);
+        CREATE INDEX IF NOT EXISTS idx_rfcs_published ON rfcs(published_date);
+
+        -- RFC カテゴリテーブル
+        CREATE TABLE IF NOT EXISTS rfc_categories (
+            rfc_id TEXT NOT NULL,
+            category TEXT NOT NULL,
+            PRIMARY KEY (rfc_id, category),
+            FOREIGN KEY (rfc_id) REFERENCES rfcs(id) ON DELETE CASCADE
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_rfc_categories_category ON rfc_categories(category);
+
+        -- RFC ブックマークテーブル
+        CREATE TABLE IF NOT EXISTS rfc_bookmarks (
+            rfc_id TEXT PRIMARY KEY,
+            memo TEXT,
+            created_at TEXT DEFAULT (datetime('now')),
+            FOREIGN KEY (rfc_id) REFERENCES rfcs(id) ON DELETE CASCADE
+        );
+
+        -- RFC 閲覧履歴テーブル
+        CREATE TABLE IF NOT EXISTS rfc_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            rfc_id TEXT NOT NULL,
+            viewed_at TEXT DEFAULT (datetime('now')),
+            FOREIGN KEY (rfc_id) REFERENCES rfcs(id) ON DELETE CASCADE
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_rfc_history_viewed ON rfc_history(viewed_at DESC);
+        "
+    )?;
+
+    // Migration: normalize NULL-able RFC fields for older databases / manual edits
+    // - status is treated as required in Rust/TS models, so avoid NULLs at rest.
+    let _ = conn.execute("UPDATE rfcs SET status = '' WHERE status IS NULL", []);
+    // - authors/keywords are read as JSON strings and decoded into Vec<String>.
+    //   Avoid NULL/empty at rest to prevent query_row/get failures in future queries.
+    let _ = conn.execute("UPDATE rfcs SET authors = '[]' WHERE authors IS NULL OR authors = ''", []);
+    let _ = conn.execute("UPDATE rfcs SET keywords = '[]' WHERE keywords IS NULL OR keywords = ''", []);
     
     // Migration: Add title_ja column if it doesn't exist (for existing databases)
     let _ = conn.execute("ALTER TABLE papers ADD COLUMN title_ja TEXT", []);
