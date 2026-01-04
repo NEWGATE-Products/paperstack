@@ -14,10 +14,10 @@ export function Header({ onRefresh, onOpenSettings, isLoading, hasApiKey }: Head
         <div>
           <h1 className="header-title">
             <span className="header-title-icon"><IconBooks size={28} /></span>
-            AI Paper News
+            Paperstack
           </h1>
           <p className="header-subtitle">
-            AI・LLM・プログラミング関連の最新論文・RFCをお届け
+            AI・LLM・プログラミング関連の論文・RFCを整理して読む
           </p>
         </div>
         <div className="header-actions">

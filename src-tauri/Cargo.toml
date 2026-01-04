@@ -1,12 +1,12 @@
 [package]
-name = "paper-news"
+name = "paperstack"
 version = "0.1.0"
-description = "AI論文ニュースリーダー - AI/LLM/プログラミング関連の最新論文をNewsサイト風UIで閲覧"
+description = "Paperstack - AI/LLM/プログラミング関連の論文・RFCを整理して読む"
 authors = ["you"]
 edition = "2021"
 
 [lib]
-name = "paper_news_lib"
+name = "paperstack_lib"
 crate-type = ["lib", "cdylib", "staticlib"]
 
 [build-dependencies]

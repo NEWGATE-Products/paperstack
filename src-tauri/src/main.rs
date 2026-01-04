@@ -2,6 +2,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    paper_news_lib::run()
+    paperstack_lib::run()
 }
 
