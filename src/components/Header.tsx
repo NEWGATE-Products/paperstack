@@ -16,9 +16,6 @@ export function Header({ onRefresh, onOpenSettings, isLoading, hasApiKey }: Head
             <span className="header-title-icon"><IconBooks size={28} /></span>
             Paperstack
           </h1>
-          <p className="header-subtitle">
-            AI・LLM・プログラミング関連の論文・RFCを整理して読む
-          </p>
         </div>
         <div className="header-actions">
           {onRefresh && (
