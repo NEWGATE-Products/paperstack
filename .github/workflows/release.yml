@@ -14,14 +14,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: macos-14
+          - platform: macos-latest
             args: --target aarch64-apple-darwin
+            rust_target: aarch64-apple-darwin
             name: macOS-arm64
-          - platform: macos-13
+          - platform: macos-latest
             args: --target x86_64-apple-darwin
+            rust_target: x86_64-apple-darwin
             name: macOS-x64
           - platform: windows-latest
             args: ''
+            rust_target: ''
             name: Windows
 
     runs-on: ${{ matrix.platform }}
@@ -42,6 +45,8 @@ jobs:
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust_target }}
 
       - name: Install dependencies (Ubuntu)
         if: matrix.platform == 'ubuntu-latest'
