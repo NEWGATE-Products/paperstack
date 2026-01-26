@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { open } from "@tauri-apps/plugin-shell";
 import type { Rfc, SummaryLevel } from "../../types/rfc";
 import { getCategoryName } from "../../types/rfc";
 import { RfcStatusBadge } from "./RfcStatusBadge";
@@ -120,7 +121,7 @@ export function RfcDetail({ rfc: initialRfc, onClose }: RfcDetailProps) {
         {/* Summary Section */}
         <div className="detail-section">
           <h3 className="section-title"><IconLightbulb size={18} className="inline-icon" /> 要約</h3>
-          
+
           <div className="summary-tabs">
             <button
               type="button"
@@ -231,14 +232,16 @@ export function RfcDetail({ rfc: initialRfc, onClose }: RfcDetailProps) {
 
         {/* Actions */}
         <div className="detail-actions">
-          <a
-            href={`https://www.rfc-editor.org/rfc/rfc${currentRfc.number}.html`}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
             className="action-btn external"
+            onClick={() => {
+              const url = `https://www.rfc-editor.org/rfc/rfc${currentRfc.number}.html`;
+              open(url).catch((err) => console.error('Failed to open URL:', err));
+            }}
           >
             <IconLink size={14} className="inline-icon" /> RFC本文を見る
-          </a>
+          </button>
           <button type="button" className="action-btn" onClick={onClose}>
             閉じる
           </button>
