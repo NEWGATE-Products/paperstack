@@ -8,6 +8,8 @@ on:
 
 jobs:
   build:
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -57,18 +59,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'Paperstack ${{ github.ref_name }}'
+          releaseBody: |
+            Paperstack ${{ github.ref_name }} リリース
+            
+            ## ダウンロード
+            - **macOS (Apple Silicon)**: `Paperstack_*_aarch64.dmg`
+            - **macOS (Intel)**: `Paperstack_*_x64.dmg`
+            - **Windows**: `Paperstack_*_x64-setup.exe` または `.msi`
+          releaseDraft: false
+          prerelease: false
           args: ${{ matrix.args }}
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.name }}
-          path: |
-            src-tauri/target/release/bundle/dmg/*.dmg
-            src-tauri/target/release/bundle/macos/*.app
-            src-tauri/target/*/release/bundle/dmg/*.dmg
-            src-tauri/target/*/release/bundle/macos/*.app
-            src-tauri/target/release/bundle/msi/*.msi
-            src-tauri/target/release/bundle/nsis/*.exe
-          if-no-files-found: ignore
 

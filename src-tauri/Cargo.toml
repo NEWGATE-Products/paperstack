@@ -1,6 +1,6 @@
 [package]
 name = "paperstack"
-version = "0.1.0"
+version = "1.1.0"
 description = "Paperstack - AI/LLM/プログラミング関連の論文・RFCを整理して読む"
 authors = ["you"]
 edition = "2021"
