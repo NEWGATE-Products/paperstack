@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
   workflow_dispatch:
 
 jobs:
@@ -23,12 +23,12 @@ jobs:
             rust_target: x86_64-apple-darwin
             name: macOS-x64
           - platform: windows-latest
-            args: ''
-            rust_target: ''
+            args: ""
+            rust_target: ""
             name: Windows
 
     runs-on: ${{ matrix.platform }}
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -63,10 +63,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: 'Paperstack ${{ github.ref_name }}'
+          releaseName: "Paperstack ${{ github.ref_name }}"
           releaseBody: |
             Paperstack ${{ github.ref_name }} リリース
-            
+
             ## ダウンロード
             - **macOS (Apple Silicon)**: `Paperstack_*_aarch64.dmg`
             - **macOS (Intel)**: `Paperstack_*_x64.dmg`
@@ -74,4 +74,3 @@ jobs:
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
-
