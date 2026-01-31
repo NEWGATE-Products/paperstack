@@ -4,13 +4,14 @@ import { CategoryTabs } from "./components/CategoryTabs";
 import { PaperList } from "./components/PaperList";
 import { SettingsModal } from "./components/SettingsModal";
 import { RfcList } from "./components/rfc";
+import { VulnList } from "./components/vuln";
 import { usePapers } from "./hooks/usePapers";
 import { useCategories } from "./hooks/useCategories";
 import { useSettings } from "./hooks/useSettings";
-import { IconBooks, IconDocument } from "./components/icons";
+import { IconBooks, IconDocument, IconShield } from "./components/icons";
 import "./styles/index.css";
 
-type MainTab = "papers" | "rfc";
+type MainTab = "papers" | "rfc" | "vuln";
 
 function App() {
   const { papers, loading, error, getPapers, fetchPapers, generateSummary } =
@@ -71,6 +72,12 @@ function App() {
         >
           <IconDocument size={18} /> RFC
         </button>
+        <button
+          className={`main-tab ${mainTab === "vuln" ? "active" : ""}`}
+          onClick={() => setMainTab("vuln")}
+        >
+          <IconShield size={18} /> 脆弱性
+        </button>
       </div>
 
       {/* Papers Tab */}
@@ -97,6 +104,13 @@ function App() {
       {mainTab === "rfc" && (
         <main className="main rfc-main">
           <RfcList />
+        </main>
+      )}
+
+      {/* Vulnerability Tab */}
+      {mainTab === "vuln" && (
+        <main className="main vuln-main">
+          <VulnList />
         </main>
       )}
 

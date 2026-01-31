@@ -697,3 +697,87 @@ export function IconPdf({ size = 20, className = "", color: _color = "currentCol
   );
 }
 
+// 🔗 External link icon
+export function IconExternalLink({ size = 20, className = "", color = "currentColor" }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 64 64"
+      fill="none"
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M48 4h12v12" stroke={color} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M60 4L32 32" stroke={color} strokeWidth="5" strokeLinecap="round" />
+      <path d="M52 36v20a4 4 0 01-4 4H12a4 4 0 01-4-4V20a4 4 0 014-4h20" stroke={color} strokeWidth="5" strokeLinecap="round" fill="none" />
+    </svg>
+  );
+}
+
+// 🛡️ Shield / Security icon
+export function IconShield({ size = 20, className = "", color: _color = "currentColor" }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 64 64"
+      fill="none"
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M32 4L8 14v18c0 14.4 10.4 27.8 24 32 13.6-4.2 24-17.6 24-32V14L32 4z" fill="#10B981" />
+      <path d="M24 32l6 6 12-12" stroke="#FFF" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </svg>
+  );
+}
+
+// ✕ Close / X icon
+export function IconClose({ size = 20, className = "", color = "currentColor" }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 64 64"
+      fill="none"
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M16 16l32 32M48 16L16 48" stroke={color} strokeWidth="5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+// ✓ Check / Success icon
+export function IconCheck({ size = 20, className = "", color = "#10B981" }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 64 64"
+      fill="none"
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="32" cy="32" r="28" fill="#D1FAE5" stroke={color} strokeWidth="3" />
+      <path d="M18 32l10 10 18-18" stroke={color} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </svg>
+  );
+}
+
+// 📁 Folder icon
+export function IconFolder({ size = 20, className = "", color: _color = "currentColor" }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 64 64"
+      fill="none"
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M4 16a4 4 0 014-4h16l6 6h26a4 4 0 014 4v32a4 4 0 01-4 4H8a4 4 0 01-4-4V16z" fill="#F59E0B" />
+      <path d="M4 24h56v30a4 4 0 01-4 4H8a4 4 0 01-4-4V24z" fill="#FBBF24" />
+    </svg>
+  );
+}

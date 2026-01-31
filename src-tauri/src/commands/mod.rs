@@ -1,6 +1,7 @@
 //! Tauri IPC Commands
 
 pub mod rfc_commands;
+pub mod vuln_commands;
 
 use crate::api::{arxiv::ArxivClient, groq::GroqClient, translate::TranslateClient};
 use crate::db::{self, models::{Category, Paper}};

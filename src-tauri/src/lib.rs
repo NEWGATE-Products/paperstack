@@ -1,6 +1,7 @@
 mod api;
 mod commands;
 mod db;
+mod scanner;
 mod settings;
 
 use settings::AppSettings;
@@ -12,6 +13,7 @@ use tauri::Manager;
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
             // Get app data directory
             let app_handle = app.handle();
@@ -60,6 +62,13 @@ pub fn run() {
             commands::rfc_commands::get_rfc_history,
             commands::rfc_commands::get_rfc_categories,
             commands::rfc_commands::get_rfc_count,
+            // Vulnerability commands
+            commands::vuln_commands::get_vulnerabilities,
+            commands::vuln_commands::fetch_vulnerabilities,
+            commands::vuln_commands::scan_directory,
+            commands::vuln_commands::get_vulnerability_detail,
+            commands::vuln_commands::get_scan_history,
+            commands::vuln_commands::get_vulnerability_count,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -1,5 +1,6 @@
 pub mod models;
 pub mod rfc_queries;
+pub mod vuln_queries;
 
 use rusqlite::{Connection, Result};
 
@@ -103,6 +104,45 @@ pub fn init_db(db_path: &str) -> Result<()> {
     
     // Migration: Add title_ja column if it doesn't exist (for existing databases)
     let _ = conn.execute("ALTER TABLE papers ADD COLUMN title_ja TEXT", []);
+    
+    // Vulnerability tables (新規)
+    conn.execute_batch(
+        "
+        -- 脆弱性テーブル
+        CREATE TABLE IF NOT EXISTS vulnerabilities (
+            id TEXT PRIMARY KEY,
+            source TEXT NOT NULL,
+            severity TEXT NOT NULL,
+            cvss_score REAL,
+            title TEXT NOT NULL,
+            description TEXT,
+            affected_package TEXT NOT NULL,
+            affected_ecosystem TEXT NOT NULL,
+            affected_versions TEXT,
+            fixed_versions TEXT,
+            published_at TEXT,
+            reference_urls TEXT DEFAULT '[]',
+            fetched_at TEXT DEFAULT (datetime('now'))
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_vuln_ecosystem ON vulnerabilities(affected_ecosystem);
+        CREATE INDEX IF NOT EXISTS idx_vuln_severity ON vulnerabilities(severity);
+        CREATE INDEX IF NOT EXISTS idx_vuln_published ON vulnerabilities(published_at DESC);
+        CREATE INDEX IF NOT EXISTS idx_vuln_package ON vulnerabilities(affected_package);
+
+        -- スキャン履歴テーブル
+        CREATE TABLE IF NOT EXISTS scan_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            directory TEXT NOT NULL,
+            ecosystem TEXT NOT NULL,
+            vuln_count INTEGER NOT NULL DEFAULT 0,
+            scanned_at TEXT DEFAULT (datetime('now'))
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_scan_history_dir ON scan_history(directory);
+        CREATE INDEX IF NOT EXISTS idx_scan_history_time ON scan_history(scanned_at DESC);
+        "
+    )?;
     
     Ok(())
 }

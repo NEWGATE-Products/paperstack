@@ -243,3 +243,82 @@ impl RfcCategory {
     }
 }
 
+// ============================================================================
+// Vulnerability Models (新規)
+// ============================================================================
+
+/// 脆弱性情報
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Vulnerability {
+    pub id: String,                              // CVE-2024-XXXXX or GHSA-XXXX
+    pub source: String,                          // "osv", "nvd", "github"
+    pub severity: String,                        // "critical", "high", "medium", "low"
+    #[serde(rename = "cvssScore")]
+    pub cvss_score: Option<f64>,
+    pub title: String,
+    pub description: Option<String>,
+    #[serde(rename = "affectedPackage")]
+    pub affected_package: String,
+    #[serde(rename = "affectedEcosystem")]
+    pub affected_ecosystem: String,
+    #[serde(rename = "affectedVersions")]
+    pub affected_versions: Option<String>,
+    #[serde(rename = "fixedVersions")]
+    pub fixed_versions: Option<String>,
+    #[serde(rename = "publishedAt")]
+    pub published_at: Option<String>,
+    pub references: Vec<String>,
+    #[serde(rename = "fetchedAt")]
+    pub fetched_at: Option<String>,
+}
+
+/// 脆弱性フィルター条件
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct VulnFilter {
+    pub ecosystem: Option<String>,
+    pub severity: Option<String>,
+    pub search: Option<String>,
+}
+
+/// 脆弱性マッチ結果（スキャン時）
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct VulnMatch {
+    #[serde(rename = "packageName")]
+    pub package_name: String,
+    #[serde(rename = "installedVersion")]
+    pub installed_version: String,
+    pub vulnerability: Vulnerability,
+}
+
+/// スキャン結果
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ScanResult {
+    pub directory: String,
+    pub ecosystems: Vec<String>,
+    pub vulnerabilities: Vec<VulnMatch>,
+    #[serde(rename = "scannedAt")]
+    pub scanned_at: String,
+    #[serde(rename = "totalPackages")]
+    pub total_packages: i32,
+}
+
+/// 脆弱性一覧レスポンス
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct VulnListResponse {
+    pub vulnerabilities: Vec<Vulnerability>,
+    pub total: i64,
+    pub page: i32,
+    pub limit: i32,
+}
+
+/// スキャン履歴
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ScanHistory {
+    pub id: i64,
+    pub directory: String,
+    pub ecosystem: String,
+    #[serde(rename = "vulnCount")]
+    pub vuln_count: i32,
+    #[serde(rename = "scannedAt")]
+    pub scanned_at: String,
+}
